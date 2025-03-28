@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Form</title>
+</head>
+<link rel="stylesheet" href="style.css">
+<body>
+    <form class="otp-Form" method="POST">
+        <span class="mainHeading">Enter OTP</span>
+        <p class="otpSubheading">We have sent a verification code to your web browser</p>
+        <div class="inputContainer">
+            <input class="form-card-input" name="otp" placeholder="____" maxlength="4" type="tel" required>
+        </div>
+        <button class="verifyButton" type="submit">Verify</button>
+        <a href="#" class="exitBtn">&times;</a>
+        <p class="resendNote">Didn't receive the code? <a class="resendBtn" onclick="generateOTP();">Resend Code</a></p>
+       
+    </form>
+
+    <script>
+        function generateOTP() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "generate_otp.php", true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var otp = xhr.responseText;
+                    showNotification("Please Do not Share Your OTP, your OTP is " + otp);
+                }
+            };
+            xhr.send();
+        }
+
+        function showNotification(message) {
+            if (Notification.permission === 'granted') {
+                new Notification(message);
+            } else if (Notification.permission !== 'denied') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        new Notification(message);
+                    }
+                });
+            }
+        }
+
+        // Request notification permission on page load
+        if (Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+            Notification.requestPermission();
+        }
+    </script>
+   
+
+</body>
+</html>
